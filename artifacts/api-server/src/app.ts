@@ -33,7 +33,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api", router);
 
 if (process.env.NODE_ENV === "production" || process.env.NODE_ENV === "staging") {
-  const publicPath = path.join(process.cwd(), "artifacts/plano-ensino/dist/public");
+  const publicPath = path.resolve(process.cwd(), "../../artifacts/plano-ensino/dist/public");
   app.use(express.static(publicPath));
   app.get(/.*/, (_req, res) => {
     res.sendFile(path.join(publicPath, "index.html"));
