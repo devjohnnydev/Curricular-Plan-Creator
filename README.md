@@ -88,48 +88,50 @@ Este projeto apresenta de forma digital e navegável o Plano de Ensino oficial d
 
 ### Passo a passo
 
-**1. Conectar o repositório**
+**1. Criar novo projeto no Railway**
 ```
 New Project → Deploy from GitHub repo → selecionar este repositório
 ```
 
-**2. Configuração automática**
+> ⚠️ **Importante:** Se o Railway criar múltiplos serviços automaticamente (um por pacote),
+> **apague todos** e crie apenas **um único serviço** apontando para a raiz do repositório.
 
-O arquivo `nixpacks.toml` controla todo o processo de build:
+**2. O Dockerfile cuida de tudo**
 
-```toml
-[phases.install]
-cmds = ["pnpm install --frozen-lockfile"]   # só instala dependências
+O `Dockerfile` na raiz do projeto é detectado automaticamente pelo Railway e executa:
 
-[phases.build]
-cmds = ["pnpm --filter @workspace/plano-ensino run build:prod"]  # só compila o plano-ensino
+```dockerfile
+# Fase 1 — Build (Node 20 Alpine)
+pnpm install --filter @workspace/plano-ensino...
+vite build → gera os arquivos estáticos
 
-[start]
-cmd = "node artifacts/plano-ensino/server.js"  # inicia o servidor
+# Fase 2 — Runtime (imagem menor, só o necessário)
+COPY dist/ e server.js → node server.js
 ```
 
 **3. Variáveis de ambiente**
 
-Nenhuma variável obrigatória. O Railway injeta `PORT` automaticamente.
+Nenhuma configuração necessária. O Railway injeta `PORT` automaticamente.
 
 | Variável | Padrão | Descrição |
 |---|---|---|
-| `PORT` | `3000` | Porta do servidor (auto Railway) |
+| `PORT` | `3000` | Porta do servidor (injetada pelo Railway) |
 
 **4. Deploy**
 
-Clique em **Deploy** — o Railway detecta o `railway.json`, instala dependências, faz o build e inicia o servidor.
+Clique em **Deploy** — o Railway detecta o `Dockerfile`, faz o build em duas etapas e inicia o servidor.
 
 ### Como funciona em produção
 
+O build usa **multi-stage Docker**:
+
 ```
-pnpm install       → instala dependências do monorepo
-vite build         → gera arquivos estáticos em artifacts/plano-ensino/dist/
-node server.js     → serve os arquivos com suporte a SPA routing
+Stage 1 (builder):  instala pnpm → instala dependências → vite build → gera dist/
+Stage 2 (runtime):  copia apenas dist/ + server.js → imagem final enxuta
 ```
 
-O `server.js` é um servidor HTTP nativo do Node.js (zero dependências extras) que:
-- Serve arquivos estáticos com cache imutável para assets
+O `server.js` é um servidor HTTP nativo do Node.js (**zero dependências em produção**) que:
+- Serve arquivos estáticos com cache imutável para assets JS/CSS
 - Redireciona qualquer rota desconhecida para `index.html` (SPA fallback)
 - Bloqueia path traversal por segurança
 
@@ -151,8 +153,8 @@ artifacts/plano-ensino/
 ├── vite.prod.config.ts        # Config para Railway (prod)
 └── server.js                  # Servidor HTTP estático (Railway)
 
+Dockerfile                     # Build multi-stage Docker (Railway usa este)
 railway.json                   # Health check e restart policy do Railway
-nixpacks.toml                  # Controla build/start (evita compilar outros pacotes)
 ```
 
 ---
