@@ -95,13 +95,17 @@ New Project → Deploy from GitHub repo → selecionar este repositório
 
 **2. Configuração automática**
 
-O arquivo `railway.json` já configura tudo automaticamente:
+O arquivo `nixpacks.toml` controla todo o processo de build:
 
-```json
-Build:  pnpm install --frozen-lockfile
-        pnpm --filter @workspace/plano-ensino run build:prod
+```toml
+[phases.install]
+cmds = ["pnpm install --frozen-lockfile"]   # só instala dependências
 
-Start:  node artifacts/plano-ensino/server.js
+[phases.build]
+cmds = ["pnpm --filter @workspace/plano-ensino run build:prod"]  # só compila o plano-ensino
+
+[start]
+cmd = "node artifacts/plano-ensino/server.js"  # inicia o servidor
 ```
 
 **3. Variáveis de ambiente**
@@ -147,7 +151,8 @@ artifacts/plano-ensino/
 ├── vite.prod.config.ts        # Config para Railway (prod)
 └── server.js                  # Servidor HTTP estático (Railway)
 
-railway.json                   # Configuração de deploy do Railway
+railway.json                   # Health check e restart policy do Railway
+nixpacks.toml                  # Controla build/start (evita compilar outros pacotes)
 ```
 
 ---
