@@ -16,6 +16,7 @@ RUN pnpm install --no-frozen-lockfile
 # Define variáveis para o build
 ENV BASE_PATH=/
 ENV NODE_ENV=production
+ENV PORT=3000
 
 # Faz o build do monorepo (typecheck, frontend, backend)
 RUN pnpm run build
