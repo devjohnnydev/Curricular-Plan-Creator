@@ -30,6 +30,10 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.get("/health", (_req, res) => {
+  res.status(200).send("OK");
+});
+
 app.use("/api", router);
 
 if (process.env.NODE_ENV === "production" || process.env.NODE_ENV === "staging") {
