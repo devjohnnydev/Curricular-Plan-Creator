@@ -1,34 +1,44 @@
+# ---------- Builder ----------
 FROM node:20-slim AS builder
 
 WORKDIR /app
 
+# Instala pnpm
 RUN npm install -g pnpm
 
-# Workspace config files (needed for pnpm catalog version resolution)
-COPY package.json pnpm-workspace.yaml pnpm-lock.yaml .npmrc tsconfig.base.json ./
+# Copia arquivos principais do workspace
+COPY package.json pnpm-workspace.yaml pnpm-lock.yaml .npmrc ./
+COPY tsconfig.base.json ./
 
-# Copy plano-ensino package manifest for layer caching
+# (Opcional mas recomendado se existir)
+COPY tsconfig.json ./
+
+# Copia apenas o package.json do módulo (melhora cache)
 COPY artifacts/plano-ensino/package.json ./artifacts/plano-ensino/package.json
 
-# Install dependencies — no frozen lockfile so pnpm picks correct platform binaries
-RUN pnpm install --no-frozen-lockfile --filter @workspace/plano-ensino
+# Instala dependências
+RUN pnpm install --no-frozen-lockfile --filter @workspace/plano-ensino...
 
-# Copy full source
+# Copia o restante do código
 COPY artifacts/plano-ensino/ ./artifacts/plano-ensino/
 
-# Build static files
-RUN PORT=3000 BASE_PATH=/ pnpm --filter @workspace/plano-ensino run build
+# Build
+RUN pnpm --filter @workspace/plano-ensino build
 
-# ---- Runtime image (smaller) ----
+
+# ---------- Runtime ----------
 FROM node:20-slim
 
 WORKDIR /app
 
+# Instala servidor estático leve
 RUN npm install -g serve
 
-COPY --from=builder /app/artifacts/plano-ensino/dist/public ./public
+# Copia apenas build final (mais leve 🚀)
+COPY --from=builder /app/artifacts/plano-ensino/dist ./public
 
 ENV PORT=3000
 EXPOSE 3000
 
+# Start
 CMD ["sh", "-c", "serve -s public -l $PORT"]
