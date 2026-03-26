@@ -1,4 +1,4 @@
-FROM node:20-alpine AS builder
+FROM node:20-slim AS builder
 
 WORKDIR /app
 
@@ -20,7 +20,7 @@ COPY artifacts/plano-ensino/ ./artifacts/plano-ensino/
 RUN PORT=3000 BASE_PATH=/ pnpm --filter @workspace/plano-ensino run build
 
 # ---- Runtime image (smaller) ----
-FROM node:20-alpine
+FROM node:20-slim
 
 WORKDIR /app
 
