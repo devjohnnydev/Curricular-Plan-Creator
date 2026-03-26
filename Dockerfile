@@ -4,22 +4,19 @@ WORKDIR /app
 
 RUN npm install -g pnpm
 
-# Workspace config
+# Workspace config files (needed for pnpm catalog version resolution)
 COPY package.json pnpm-workspace.yaml pnpm-lock.yaml .npmrc ./
 
-# Copy lib packages (plano-ensino depends on api-client-react which may be needed)
-COPY lib/ ./lib/
-
-# Copy plano-ensino package.json first for layer caching
+# Copy plano-ensino package manifest for layer caching
 COPY artifacts/plano-ensino/package.json ./artifacts/plano-ensino/package.json
 
-# Install only what's needed for plano-ensino and its workspace deps
-RUN pnpm install --frozen-lockfile --filter @workspace/plano-ensino...
+# Install only plano-ensino dependencies (no lib/* workspace packages needed)
+RUN pnpm install --frozen-lockfile --filter @workspace/plano-ensino
 
 # Copy full source
 COPY artifacts/plano-ensino/ ./artifacts/plano-ensino/
 
-# Build static files (BASE_PATH=/ for Railway root hosting)
+# Build static files
 RUN PORT=3000 BASE_PATH=/ pnpm --filter @workspace/plano-ensino run build
 
 # ---- Runtime image (smaller) ----
