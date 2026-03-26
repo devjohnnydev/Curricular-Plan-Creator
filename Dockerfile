@@ -5,38 +5,38 @@ WORKDIR /app
 
 RUN npm install -g pnpm
 
-# Copia arquivos do workspace (incluindo tsconfig)
+# Copia pacotes necessários
 COPY package.json pnpm-workspace.yaml pnpm-lock.yaml .npmrc tsconfig.base.json ./
-
-# Copia package do módulo (melhora cache)
-COPY artifacts/plano-ensino/package.json ./artifacts/plano-ensino/package.json
+# Copiar todo o workspace
+COPY . .
 
 # Instala dependências
-RUN pnpm install --no-frozen-lockfile --filter @workspace/plano-ensino...
+RUN pnpm install --no-frozen-lockfile
 
-# Copia código
-COPY artifacts/plano-ensino/ ./artifacts/plano-ensino/
+# Define variáveis para o build
+ENV BASE_PATH=/
+ENV NODE_ENV=production
 
-# 🔥 CORREÇÃO: define PORT no build
-ENV PORT=3000
+# Faz o build do monorepo (typecheck, frontend, backend)
+RUN pnpm run build
 
-# Build
-RUN pnpm --filter @workspace/plano-ensino build
-
+# Depois do build do backend, talvez tenhamos que garantir que o express saiba lidar com arquivos.
+# Deixaremos tudo em /app para rodar com pnpm
 
 # ---------- Runtime ----------
 FROM node:20-slim
 
 WORKDIR /app
 
-RUN npm install -g serve
+RUN npm install -g pnpm
 
-# Copia apenas build final
-COPY --from=builder /app/artifacts/plano-ensino/dist ./public
+# Copia tudo do builder
+COPY --from=builder /app /app
 
-# Railway define PORT automaticamente, mas deixamos fallback
 ENV PORT=3000
+ENV NODE_ENV=production
 
 EXPOSE 3000
 
-CMD ["sh", "-c", "serve -s public -l $PORT"]
+# Executa migrações e inicia API
+CMD ["sh", "-c", "pnpm --filter @workspace/db run push && pnpm --filter @workspace/api-server run start"]
