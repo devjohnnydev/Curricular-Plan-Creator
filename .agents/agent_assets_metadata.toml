@@ -1,0 +1,8 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "fMSDkAJ_C0x-cWIC00U4E"
+uri = "file://README.md"
+type = "text"
+title = "README — Plano de Ensino SENAI"
