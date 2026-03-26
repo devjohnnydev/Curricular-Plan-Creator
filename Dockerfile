@@ -10,8 +10,8 @@ COPY package.json pnpm-workspace.yaml pnpm-lock.yaml .npmrc ./
 # Copy plano-ensino package manifest for layer caching
 COPY artifacts/plano-ensino/package.json ./artifacts/plano-ensino/package.json
 
-# Install only plano-ensino dependencies (no lib/* workspace packages needed)
-RUN pnpm install --frozen-lockfile --filter @workspace/plano-ensino
+# Install dependencies — no frozen lockfile so pnpm picks correct platform binaries
+RUN pnpm install --no-frozen-lockfile --filter @workspace/plano-ensino
 
 # Copy full source
 COPY artifacts/plano-ensino/ ./artifacts/plano-ensino/
