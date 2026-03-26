@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { unidadesCurriculares, funcoesProfissionais, moduloConfig, type UnidadeCurricular } from "./data/planoEnsino";
 
-const SENAI_BLUE = "#E30613";
-const SENAI_RED = "#E30613";
+const SENAI_BLUE = "#D0011B";
+const SENAI_RED = "#D0011B";
 
 function Badge({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
@@ -250,7 +250,7 @@ function HomePage({ onSelectUC }: { onSelectUC: (uc: UnidadeCurricular) => void 
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <header className="text-white py-10 px-4" style={{ background: "linear-gradient(135deg, #C0000A 0%, #E30613 60%, #FF1A26 100%)" }}>
+      <header className="text-white py-10 px-4" style={{ background: "linear-gradient(135deg, #A80016 0%, #D0011B 60%, #E8001F 100%)" }}>
         <div className="max-w-5xl mx-auto">
           <div className="flex items-center gap-3 mb-6">
             <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center shrink-0">
@@ -288,14 +288,14 @@ function HomePage({ onSelectUC }: { onSelectUC: (uc: UnidadeCurricular) => void 
           <button
             onClick={() => setActiveView("ucs")}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${activeView === "ucs" ? "text-white shadow-sm" : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-50"}`}
-            style={activeView === "ucs" ? { backgroundColor: "#E30613" } : {}}
+            style={activeView === "ucs" ? { backgroundColor: "#D0011B" } : {}}
           >
             Unidades Curriculares
           </button>
           <button
             onClick={() => setActiveView("funcoes")}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${activeView === "funcoes" ? "text-white shadow-sm" : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-50"}`}
-            style={activeView === "funcoes" ? { backgroundColor: "#E30613" } : {}}
+            style={activeView === "funcoes" ? { backgroundColor: "#D0011B" } : {}}
           >
             Perfil Profissional
           </button>
