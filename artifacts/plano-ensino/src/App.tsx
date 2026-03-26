@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { unidadesCurriculares, funcoesProfissionais, moduloConfig, type UnidadeCurricular } from "./data/planoEnsino";
+import { CronogramaView } from "./components/CronogramaView";
+import { CronogramaUCDetail } from "./components/CronogramaUCDetail";
 
 const SENAI_BLUE = "#D0011B";
 const SENAI_RED = "#D0011B";
@@ -230,10 +232,10 @@ function UCDetail({ uc, onBack }: { uc: UnidadeCurricular; onBack: () => void })
   );
 }
 
-function HomePage({ onSelectUC }: { onSelectUC: (uc: UnidadeCurricular) => void }) {
+function HomePage({ onSelectUC, onSelectCronogramaUC }: { onSelectUC: (uc: UnidadeCurricular) => void; onSelectCronogramaUC: (uc: UnidadeCurricular) => void }) {
   const [search, setSearch] = useState("");
   const [filterModulo, setFilterModulo] = useState<string>("todos");
-  const [activeView, setActiveView] = useState<"ucs" | "funcoes">("ucs");
+  const [activeView, setActiveView] = useState<"ucs" | "funcoes" | "cronograma">("ucs");
 
   const modulos = ["todos", "Módulo Básico", "Módulo Específico I", "Módulo Específico II"];
 
@@ -284,7 +286,7 @@ function HomePage({ onSelectUC }: { onSelectUC: (uc: UnidadeCurricular) => void 
       </header>
 
       <div className="max-w-5xl mx-auto px-4 py-6">
-        <div className="flex gap-2 mb-6">
+        <div className="flex gap-2 mb-6 flex-wrap">
           <button
             onClick={() => setActiveView("ucs")}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${activeView === "ucs" ? "text-white shadow-sm" : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-50"}`}
@@ -298,6 +300,13 @@ function HomePage({ onSelectUC }: { onSelectUC: (uc: UnidadeCurricular) => void 
             style={activeView === "funcoes" ? { backgroundColor: "#D0011B" } : {}}
           >
             Perfil Profissional
+          </button>
+          <button
+            onClick={() => setActiveView("cronograma")}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${activeView === "cronograma" ? "text-white shadow-sm" : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-50"}`}
+            style={activeView === "cronograma" ? { backgroundColor: "#1d4ed8" } : {}}
+          >
+            📅 Cronograma
           </button>
         </div>
 
@@ -413,6 +422,10 @@ function HomePage({ onSelectUC }: { onSelectUC: (uc: UnidadeCurricular) => void 
           </div>
         )}
 
+        {activeView === "cronograma" && (
+          <CronogramaView onSelectUC={onSelectCronogramaUC} />
+        )}
+
         <footer className="mt-10 text-center text-xs text-gray-400 pb-6">
           <p>Escola SENAI "Morvan Figueiredo" — CFP 1.03 · Rua do Oratório, 215 — Mooca, São Paulo/SP</p>
           <p className="mt-1">Plano de Curso: Técnico em Desenvolvimento de Sistemas (SENAI-SP, 2023) · Proposta Pedagógica 2026</p>
@@ -424,14 +437,21 @@ function HomePage({ onSelectUC }: { onSelectUC: (uc: UnidadeCurricular) => void 
 
 export default function App() {
   const [selectedUC, setSelectedUC] = useState<UnidadeCurricular | null>(null);
+  const [cronogramaUC, setCronogramaUC] = useState<UnidadeCurricular | null>(null);
+
+  // CronogramaUCDetail takes priority, then UCDetail, then HomePage
+  if (cronogramaUC) {
+    return <CronogramaUCDetail uc={cronogramaUC} onBack={() => setCronogramaUC(null)} />;
+  }
+
+  if (selectedUC) {
+    return <UCDetail uc={selectedUC} onBack={() => setSelectedUC(null)} />;
+  }
 
   return (
-    <>
-      {selectedUC ? (
-        <UCDetail uc={selectedUC} onBack={() => setSelectedUC(null)} />
-      ) : (
-        <HomePage onSelectUC={setSelectedUC} />
-      )}
-    </>
+    <HomePage
+      onSelectUC={setSelectedUC}
+      onSelectCronogramaUC={setCronogramaUC}
+    />
   );
 }
