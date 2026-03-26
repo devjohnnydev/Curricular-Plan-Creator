@@ -1,0 +1,5 @@
+# Isto previne o Railway de criar um serviço para cada pacote no painel UI
+# O Railway usa esse arquivo para escanear serviços, mas como temos um .dockerignore, o Docker continuará lendo a pasta `artifacts` corretamente
+artifacts/*
+lib/*
+scripts/*
