@@ -1,0 +1,159 @@
+
+
+profound-adventure
+
+production
+
+
+34
+
+Agent
+
+
+
+
+@workspace/plano-ensino
+Deployments
+Variables
+Metrics
+Settings
+Unexposed service
+us-east4-eqdc4a
+1 Replica
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@workspace/plano-ensino
+/
+fbe8d7d0
+Failed
+
+Mar 26, 2026, 2:44 PM GMT-3
+Get Help
+Details
+Build Logs
+Deploy Logs
+Network Flow Logs
+Search build logs
+
+You reached the start of the range
+Mar 26, 2026, 2:39 PM
+ 
+[Region: us-east4]
+=========================
+Using Detected Dockerfile
+=========================
+
+context: s9n7-GhvH
+
+internal
+load build definition from Dockerfile
+0ms
+
+internal
+load metadata for docker.io/library/node:20-slim
+265ms
+
+internal
+load .dockerignore
+0ms
+
+internal
+load build context
+0ms
+
+builder
+FROM docker.io/library/node:20-slim@sha256:1e85773c98c31d4fe5b545e4cb17379e617b348832fb3738b22a08f68dec30f3
+7ms
+
+builder
+WORKDIR /app
+279ms
+
+builder
+RUN npm install -g pnpm
+1s
+npm notice
+
+stage-1
+RUN npm install -g serve
+3s
+
+added 85 packages in 3s
+
+26 packages are looking for funding
+  run `npm fund` for details
+npm notice
+npm notice New major version of npm available! 10.8.2 -> 11.12.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.12.0
+npm notice To update run: npm install -g npm@11.12.0
+npm notice
+
+builder
+COPY package.json pnpm-workspace.yaml pnpm-lock.yaml .npmrc ./
+41ms
+
+builder
+COPY artifacts/plano-ensino/package.json ./artifacts/plano-ensino/package.json
+15ms
+
+builder
+RUN pnpm install --no-frozen-lockfile --filter @workspace/plano-ensino
+3s
+Done in 2.9s using pnpm v10.33.0
+
+builder
+COPY artifacts/plano-ensino/ ./artifacts/plano-ensino/
+249ms
+
+builder
+RUN PORT=3000 BASE_PATH=/ pnpm --filter @workspace/plano-ensino run build
+1s
+> @workspace/plano-ensino@0.0.0 build /app/artifacts/plano-ensino
+> vite build --config vite.config.ts
+▲ [WARNING] Cannot find base config file "../../tsconfig.base.json" [tsconfig.json]
+    tsconfig.json:2:13:
+      2 │   "extends": "../../tsconfig.base.json",
+        ╵              ~~~~~~~~~~~~~~~~~~~~~~~~~~
+vite v7.3.1 building client environment for production...
+✓ 0 modules transformed.
+✗ Build failed in 35ms
+error during build:
+[vite:build-html] failed to resolve "extends":"../../tsconfig.base.json" in /app/artifacts/plano-ensino/tsconfig.json
+file: /app/artifacts/plano-ensino/index.html
+    at resolveExtends (file:///app/node_modules/.pnpm/vite@7.3.1_@types+node@25.3.5_jiti@2.6.1_lightningcss@1.31.1_tsx@4.21.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:5809:8)
+    at parseExtends (file:///app/node_modules/.pnpm/vite@7.3.1_@types+node@25.3.5_jiti@2.6.1_lightningcss@1.31.1_tsx@4.21.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:5775:71)
+    at parse$13 (file:///app/node_modules/.pnpm/vite@7.3.1_@types+node@25.3.5_jiti@2.6.1_lightningcss@1.31.1_tsx@4.21.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:5677:23)
+    at async loadTsconfigJsonForFile (file:///app/node_modules/.pnpm/vite@7.3.1_@types+node@25.3.5_jiti@2.6.1_lightningcss@1.31.1_tsx@4.21.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:6286:37)
+    at async transformWithEsbuild (file:///app/node_modules/.pnpm/vite@7.3.1_@types+node@25.3.5_jiti@2.6.1_lightningcss@1.31.1_tsx@4.21.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:6086:55)
+    at async Object.transform (file:///app/node_modules/.pnpm/vite@7.3.1_@types+node@25.3.5_jiti@2.6.1_lightningcss@1.31.1_tsx@4.21.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:6172:20)
+    at async transform (file:///app/node_modules/.pnpm/rollup@4.59.0/node_modules/rollup/dist/es/shared/node-entry.js:21269:16)
+    at async ModuleLoader.addModuleSource (file:///app/node_modules/.pnpm/rollup@4.59.0/node_modules/rollup/dist/es/shared/node-entry.js:21497:36)
+/app/artifacts/plano-ensino:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @workspace/plano-ensino@0.0.0 build: `vite build --config vite.config.ts`
+Exit status 1
+Dockerfile:20
+-------------------
+18 |
+19 |     # Build static files
+20 | >>> RUN PORT=3000 BASE_PATH=/ pnpm --filter @workspace/plano-ensino run build
+21 |
+22 |     # ---- Runtime image (smaller) ----
+-------------------
+ERROR: failed to build: failed to solve: process "/bin/sh -c PORT=3000 BASE_PATH=/ pnpm --filter @workspace/plano-ensino run build" did not complete successfully: exit code: 1
+You reached the end of the range
+Mar 26, 2026, 2:50 PM
+
+
