@@ -71,11 +71,63 @@ Este projeto apresenta de forma digital e navegável o Plano de Ensino oficial d
 
 | Camada | Tecnologia |
 |---|---|
-| Framework | React 18 + TypeScript |
-| Build | Vite |
+| Framework | React 19 + TypeScript |
+| Build | Vite 7 |
 | Estilização | Tailwind CSS v4 |
 | Roteamento | Wouter |
 | Monorepo | pnpm Workspaces |
+| Servidor prod | Node.js http (built-in) |
+
+---
+
+## 🚂 Deploy no Railway
+
+### Pré-requisitos
+- Conta no [Railway](https://railway.app)
+- Repositório no GitHub com este código
+
+### Passo a passo
+
+**1. Conectar o repositório**
+```
+New Project → Deploy from GitHub repo → selecionar este repositório
+```
+
+**2. Configuração automática**
+
+O arquivo `railway.json` já configura tudo automaticamente:
+
+```json
+Build:  pnpm install --frozen-lockfile
+        pnpm --filter @workspace/plano-ensino run build:prod
+
+Start:  node artifacts/plano-ensino/server.js
+```
+
+**3. Variáveis de ambiente**
+
+Nenhuma variável obrigatória. O Railway injeta `PORT` automaticamente.
+
+| Variável | Padrão | Descrição |
+|---|---|---|
+| `PORT` | `3000` | Porta do servidor (auto Railway) |
+
+**4. Deploy**
+
+Clique em **Deploy** — o Railway detecta o `railway.json`, instala dependências, faz o build e inicia o servidor.
+
+### Como funciona em produção
+
+```
+pnpm install       → instala dependências do monorepo
+vite build         → gera arquivos estáticos em artifacts/plano-ensino/dist/
+node server.js     → serve os arquivos com suporte a SPA routing
+```
+
+O `server.js` é um servidor HTTP nativo do Node.js (zero dependências extras) que:
+- Serve arquivos estáticos com cache imutável para assets
+- Redireciona qualquer rota desconhecida para `index.html` (SPA fallback)
+- Bloqueia path traversal por segurança
 
 ---
 
@@ -89,8 +141,13 @@ artifacts/plano-ensino/
 │   ├── App.tsx                # Interface principal e navegação
 │   ├── index.css              # Tema e variáveis de cor
 │   └── main.tsx               # Entry point
+├── dist/                      # Build de produção (gerado)
 ├── index.html
-└── vite.config.ts
+├── vite.config.ts             # Config para Replit (dev)
+├── vite.prod.config.ts        # Config para Railway (prod)
+└── server.js                  # Servidor HTTP estático (Railway)
+
+railway.json                   # Configuração de deploy do Railway
 ```
 
 ---
