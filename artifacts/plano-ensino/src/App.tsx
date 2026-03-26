@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { unidadesCurriculares, funcoesProfissionais, moduloConfig, type UnidadeCurricular } from "./data/planoEnsino";
 
-const SENAI_BLUE = "#003F7F";
+const SENAI_BLUE = "#E30613";
 const SENAI_RED = "#E30613";
 
 function Badge({ children, className = "" }: { children: React.ReactNode; className?: string }) {
@@ -250,7 +250,7 @@ function HomePage({ onSelectUC }: { onSelectUC: (uc: UnidadeCurricular) => void 
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <header className="text-white py-10 px-4" style={{ background: `linear-gradient(135deg, ${SENAI_BLUE} 0%, #005BB5 100%)` }}>
+      <header className="text-white py-10 px-4" style={{ background: "linear-gradient(135deg, #C0000A 0%, #E30613 60%, #FF1A26 100%)" }}>
         <div className="max-w-5xl mx-auto">
           <div className="flex items-center gap-3 mb-6">
             <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center shrink-0">
@@ -264,7 +264,8 @@ function HomePage({ onSelectUC }: { onSelectUC: (uc: UnidadeCurricular) => void 
 
           <div className="mb-2">
             <h2 className="text-2xl font-extrabold mb-1">Técnico em Desenvolvimento de Sistemas</h2>
-            <p className="text-blue-200 text-sm">Eixo Tecnológico: Informação e Comunicação · 1.200h · 4 semestres</p>
+            <p className="text-sm mb-2" style={{ color: "rgba(255,255,255,0.8)" }}>Eixo Tecnológico: Informação e Comunicação · 1.200h · 4 semestres</p>
+            <p className="text-xs font-medium" style={{ color: "rgba(255,255,255,0.65)" }}>Elaborado pelo Professor Johnny Braga de Oliveira</p>
           </div>
 
           <div className="grid grid-cols-3 gap-4 mt-6">
@@ -287,14 +288,14 @@ function HomePage({ onSelectUC }: { onSelectUC: (uc: UnidadeCurricular) => void 
           <button
             onClick={() => setActiveView("ucs")}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${activeView === "ucs" ? "text-white shadow-sm" : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-50"}`}
-            style={activeView === "ucs" ? { backgroundColor: SENAI_BLUE } : {}}
+            style={activeView === "ucs" ? { backgroundColor: "#E30613" } : {}}
           >
             Unidades Curriculares
           </button>
           <button
             onClick={() => setActiveView("funcoes")}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${activeView === "funcoes" ? "text-white shadow-sm" : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-50"}`}
-            style={activeView === "funcoes" ? { backgroundColor: SENAI_BLUE } : {}}
+            style={activeView === "funcoes" ? { backgroundColor: "#E30613" } : {}}
           >
             Perfil Profissional
           </button>
