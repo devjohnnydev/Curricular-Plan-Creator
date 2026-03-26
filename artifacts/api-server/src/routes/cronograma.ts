@@ -38,16 +38,16 @@ router.get("/cronograma", async (_req: Request, res: Response) => {
       resumo[aula.ucId] = (resumo[aula.ucId] ?? 0) + aula.duracao;
     }
 
-    res.json({ resumo }); // { resumo: { logica: 240, banco: 120, ... } } (minutos)
+    return res.json({ resumo }); // { resumo: { logica: 240, banco: 120, ... } } (minutos)
   } catch (err) {
-    res.status(500).json({ error: "Erro ao buscar resumo do cronograma", details: String(err) });
+    return res.status(500).json({ error: "Erro ao buscar resumo do cronograma", details: String(err) });
   }
 });
 
 // ─── GET /cronograma/:ucId — Lista de aulas de uma UC ─────────────────────────
 router.get("/cronograma/:ucId", async (req: Request, res: Response) => {
   try {
-    const { ucId } = req.params;
+    const ucId = req.params.ucId as string;
     const aulas = await db
       .select()
       .from(aulasTable)
@@ -78,16 +78,16 @@ router.get("/cronograma/:ucId", async (req: Request, res: Response) => {
     // Ordenar por data
     aulasCompletas.sort((a, b) => a.data.localeCompare(b.data));
 
-    res.json({ aulas: aulasCompletas });
+    return res.json({ aulas: aulasCompletas });
   } catch (err) {
-    res.status(500).json({ error: "Erro ao buscar aulas", details: String(err) });
+    return res.status(500).json({ error: "Erro ao buscar aulas", details: String(err) });
   }
 });
 
 // ─── POST /cronograma/:ucId/aulas — Criar nova aula ──────────────────────────
 router.post("/cronograma/:ucId/aulas", async (req: Request, res: Response) => {
   try {
-    const { ucId } = req.params;
+    const ucId = req.params.ucId as string;
     const parsed = createAulaSchema.safeParse({ ...req.body, ucId });
 
     if (!parsed.success) {
@@ -127,9 +127,9 @@ router.post("/cronograma/:ucId/aulas", async (req: Request, res: Response) => {
     ]);
 
     const aulaCompleta = await getAulaComRelacoes(novaAula.id);
-    res.status(201).json(aulaCompleta);
+    return res.status(201).json(aulaCompleta);
   } catch (err) {
-    res.status(500).json({ error: "Erro ao criar aula", details: String(err) });
+    return res.status(500).json({ error: "Erro ao criar aula", details: String(err) });
   }
 });
 
@@ -191,9 +191,9 @@ router.put("/cronograma/aulas/:aulaId", async (req: Request, res: Response) => {
     const aulaCompleta = await getAulaComRelacoes(aulaId);
     if (!aulaCompleta) return res.status(404).json({ error: "Aula não encontrada" });
 
-    res.json(aulaCompleta);
+    return res.json(aulaCompleta);
   } catch (err) {
-    res.status(500).json({ error: "Erro ao atualizar aula", details: String(err) });
+    return res.status(500).json({ error: "Erro ao atualizar aula", details: String(err) });
   }
 });
 
@@ -207,9 +207,9 @@ router.delete("/cronograma/aulas/:aulaId", async (req: Request, res: Response) =
     const deleted = await db.delete(aulasTable).where(eq(aulasTable.id, aulaId)).returning();
     if (deleted.length === 0) return res.status(404).json({ error: "Aula não encontrada" });
 
-    res.json({ success: true, id: aulaId });
+    return res.json({ success: true, id: aulaId });
   } catch (err) {
-    res.status(500).json({ error: "Erro ao excluir aula", details: String(err) });
+    return res.status(500).json({ error: "Erro ao excluir aula", details: String(err) });
   }
 });
 
