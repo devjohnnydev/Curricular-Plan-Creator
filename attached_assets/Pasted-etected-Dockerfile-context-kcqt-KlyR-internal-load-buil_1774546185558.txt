@@ -1,0 +1,101 @@
+etected Dockerfile
+=========================
+
+context: kcqt-KlyR
+
+internal
+load build definition from Dockerfile
+0ms
+
+internal
+load metadata for docker.io/library/node:20-alpine
+80ms
+
+internal
+load .dockerignore
+0ms
+
+builder
+FROM docker.io/library/node:20-alpine@sha256:f598378b5240225e6beab68fa9f356db1fb8efe55173e6d4d8153113bb8f333c
+15ms
+
+internal
+load build context
+0ms
+
+builder
+WORKDIR /app cached
+0ms
+
+builder
+RUN npm install -g pnpm
+2s
+npm notice
+
+stage-1
+RUN npm install -g serve
+3s
+npm notice
+
+builder
+COPY package.json pnpm-workspace.yaml pnpm-lock.yaml .npmrc ./
+81ms
+
+builder
+COPY artifacts/plano-ensino/package.json ./artifacts/plano-ensino/package.json
+25ms
+
+builder
+RUN pnpm install --frozen-lockfile --filter @workspace/plano-ensino
+5s
+Done in 5s using pnpm v10.33.0
+
+builder
+COPY artifacts/plano-ensino/ ./artifacts/plano-ensino/
+304ms
+
+builder
+RUN PORT=3000 BASE_PATH=/ pnpm --filter @workspace/plano-ensino run build
+1s
+/app/node_modules/.pnpm/rollup@4.59.0/node_modules/rollup/dist/native.js:115
+		throw new Error(
+		      ^
+Error: Cannot find module @rollup/rollup-linux-x64-musl. npm has a bug related to optional dependencies (https://github.com/npm/cli/issues/4828). Please try `npm i` again after removing both package-lock.json and node_modules directory.
+
+    at requireWithFriendlyError (/app/node_modules/.pnpm/rollup@4.59.0/node_modules/rollup/dist/native.js:115:9)
+    at Object.<anonymous> (/app/node_modules/.pnpm/rollup@4.59.0/node_modules/rollup/dist/native.js:124:76)
+    ... 3 lines matching cause stack trace ...
+    at Module._load (node:internal/modules/cjs/loader:1091:12)
+    at cjsLoader (node:internal/modules/esm/translators:298:15)
+    at ModuleWrap.<anonymous> (node:internal/modules/esm/translators:240:7)
+    at ModuleJob.run (node:internal/modules/esm/module_job:325:25)
+    at async ModuleLoader.import (node:internal/modules/esm/loader:606:24) {
+  [cause]: Error: Cannot find module '@rollup/rollup-linux-x64-musl'
+  Require stack:
+  - /app/node_modules/.pnpm/rollup@4.59.0/node_modules/rollup/dist/native.js
+      at Module._resolveFilename (node:internal/modules/cjs/loader:1207:15)
+      at Module._load (node:internal/modules/cjs/loader:1038:27)
+      at Module.require (node:internal/modules/cjs/loader:1289:19)
+      at require (node:internal/modules/helpers:182:18)
+      at requireWithFriendlyError (/app/node_modules/.pnpm/rollup@4.59.0/node_modules/rollup/dist/native.js:97:10)
+      at Object.<anonymous> (/app/node_modules/.pnpm/rollup@4.59.0/node_modules/rollup/dist/native.js:124:76)
+      at Module._compile (node:internal/modules/cjs/loader:1521:14)
+      at Module._extensions..js (node:internal/modules/cjs/loader:1623:10)
+      at Module.load (node:internal/modules/cjs/loader:1266:32)
+      at Module._load (node:internal/modules/cjs/loader:1091:12) {
+    code: 'MODULE_NOT_FOUND',
+    requireStack: [
+      '/app/node_modules/.pnpm/rollup@4.59.0/node_modules/rollup/dist/native.js'
+    ]
+  }
+}
+Node.js v20.20.2
+Dockerfile:20
+-------------------
+18 |
+19 |     # Build static files
+20 | >>> RUN PORT=3000 BASE_PATH=/ pnpm --filter @workspace/plano-ensino run build
+21 |
+22 |     # ---- Runtime image (smaller) ----
+-------------------
+ERROR: failed to build: failed to solve: process "/bin/sh -c PORT=3000 BASE_PATH=/ pnpm --filter @workspace/plano-ensino run build" did not complete successfully: exit code: 1
