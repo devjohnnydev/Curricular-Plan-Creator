@@ -34,7 +34,10 @@ RUN npm install -g pnpm
 # Copia tudo do builder
 COPY --from=builder /app /app
 
+ENV PORT=3000
 ENV NODE_ENV=production
+
+EXPOSE 3000
 
 # Executa migrações e inicia API
 CMD ["sh", "-c", "pnpm --filter @workspace/db run push && pnpm --filter @workspace/api-server run start"]
